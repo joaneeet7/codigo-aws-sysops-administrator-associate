@@ -1,0 +1,5 @@
+# Instancia de Estados Unidos (us-east-1): 3.90.61.224
+# Instancia de Asia (ap-southeast-1): 18.141.188.205
+# Instancia de Europa (eu-central-1): 3.79.235.192
+
+# ALB (eu-central-1): demo-route53-alb-1801735322.eu-central-1.elb.amazonaws.com

@@ -1,0 +1,104 @@
+==================================================
+✅ CONFIGURACIÓN DE CLOUDWATCH AGENT EN EC2 (Amazon Linux 2)
+==================================================
+
+Objetivo:
+Instalar y configurar el agente unificado de CloudWatch para:
+- Recoger métricas del sistema (RAM, CPU, etc.)
+- Enviar logs de Apache (access_log, error_log) a CloudWatch Logs
+- Almacenar la configuración en SSM Parameter Store
+
+==================================================
+1. Crear un rol IAM para la instancia EC2
+==================================================
+- Ve a IAM > Roles > Crear rol
+- Tipo de entidad: AWS Service > EC2
+- Políticas necesarias:
+  ✅ CloudWatchAgentServerPolicy
+  ✅ (opcional para guardar en SSM): CloudWatchAgentAdminPolicy
+- Asocia este rol a tu instancia EC2 al lanzarla o luego
+
+==================================================
+2. Lanzar instancia EC2 (Amazon Linux 2)
+==================================================
+- AMI: Amazon Linux
+- Tipo: t2.micro
+- Asociar el rol IAM creado
+- Crear un Security Group con:
+  - SSH (puerto 22)
+  - HTTP (puerto 80)
+
+==================================================
+3. Script de instalación (manual o en archivo .sh)
+==================================================
+
+# Elevar permisos
+sudo su
+
+# Actualizar el sistema
+yum update -y
+
+# Instalar Apache
+yum install -y httpd
+
+# Crear página de prueba
+echo "Bienvenido al servidor Apache con CloudWatch Agent" > /var/www/html/index.html
+
+# Iniciar Apache
+systemctl start httpd
+systemctl enable httpd
+
+# Instalar el agente unificado de CloudWatch
+yum install -y amazon-cloudwatch-agent
+
+# (Opcional) Evitar errores si se activa CollectD en el wizard
+sudo mkdir -p /usr/share/collectd
+sudo touch /usr/share/collectd/types.db
+
+==================================================
+4. Ejecutar el asistente de configuración
+==================================================
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+
+📌 Respuestas sugeridas:
+- OS: Linux
+- EC2: Sí
+- StatsD: Sí (puerto por defecto)
+- CollectD: ❌ No (a menos que lo instales)
+- Métricas: ✅ Sí (RAM, CPU, etc.)
+- Dimensiones EC2: ✅ Sí
+- Resolución: 60s
+- Nivel de detalle: Básico
+- Logs:
+  - /var/log/httpd/access_log (grupo: access_log)
+  - /var/log/httpd/error_log (grupo: error_log)
+- Retención de logs: 7 días (o elige tú)
+- ¿Guardar en SSM?: ✅ Sí
+
+==================================================
+5. Iniciar el agente desde la configuración
+==================================================
+
+# OPCIÓN A: Desde SSM Parameter Store
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config -m ec2 \
+  -c ssm:AmazonCloudWatch-linux -s
+
+# OPCIÓN B: Desde archivo local .json
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json -s
+
+==================================================
+6. Verifica en AWS CloudWatch
+==================================================
+- Ve a CloudWatch > Log groups:
+  ✅ Verás: access_log y error_log
+- Ve a CloudWatch > Metrics > CWAgent:
+  ✅ Verás métricas de RAM, disco, CPU, red, etc.
+
+==================================================
+7. Limpieza final (opcional)
+==================================================
+- Si es para una demo: puedes terminar la instancia
+- Si es para producción: asegúrate de que el agente se reinicie en reboot

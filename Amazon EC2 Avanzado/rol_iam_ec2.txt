@@ -1,0 +1,20 @@
+# Configuración de las claves de acceso
+aws configure
+
+# Associar el rol (instance profile) a la instancia
+aws ec2 associate-iam-instance-profile --instance-id <ID-EC2> --iam-instance-profile Name="<ROLE-NAME>"
+
+# Describir detalles de la asociación del rol IAM en la EC2
+aws ec2 describe-iam-instance-profile-associations --filters "Name=instance-id,Values=<ID-EC2>"
+
+# Ver el funcionamiento del rol IAM (debe funcionar)
+aws iam list-users
+
+# Agarrar la información del 'AssociationId' a partir del comando anterior 
+iip-assoc-0197fc8d028c13323
+
+# Desasociar el rol IAM de la instancia EC2 usando el 'AssociationId'
+aws ec2 disassociate-iam-instance-profile --association-id iip-assoc-0197fc8d028c13323
+
+# Ver el funcionamiento del rol IAM (NO debe funcionar)
+aws iam list-users

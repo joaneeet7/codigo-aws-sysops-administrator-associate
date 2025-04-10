@@ -1,0 +1,30 @@
+Juan, Madrid
+Ana, Barcelona
+Pedro, Valencia
+Lucía, Sevilla
+Miguel, Zaragoza
+Sofía, Málaga
+Carlos, Murcia
+Elena, Palma de Mallorca
+Luis, Las Palmas de Gran Canaria
+Irene, Bilbao
+Marco, Roma
+Laura, Nápoles
+Giulia, Milán
+Luca, Turín
+Marie, París
+Jean, Marsella
+Sophie, Lyon
+Christophe, Toulouse
+Emma, Niza
+Oliver, Londres
+Charlotte, Manchester
+Harry, Liverpool
+Amelia, Bristol
+Noah, Edimburgo
+Liam, Dublín
+Mia, Cork
+Ethan, Vancouver
+Ava, Toronto
+James, Montreal
+Isabella, Calgary

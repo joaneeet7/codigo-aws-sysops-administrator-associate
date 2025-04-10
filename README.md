@@ -1,1 +1,1 @@
-# -joaneeet7-codigo-aws-sysops-administrator-associate
+# codigo-aws-sysops-administrator-associate
